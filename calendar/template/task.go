@@ -3,18 +3,19 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/Jakob-em/advent-of-code-2020/utils"
 	"log"
 	"path"
 	"path/filepath"
 	"runtime"
+
+	"github.com/Jakob-em/advent-of-code-2020/utils"
 )
 
-func Part1(lines []string) (int, error) {
+func part1(lines []string) (int, error) {
 	return 0, errors.New("not implemented")
 }
 
-func Part2(lines []string) (int, error) {
+func part2(lines []string) (int, error) {
 	return 0, errors.New("not implemented")
 }
 
@@ -23,13 +24,13 @@ func main() {
 	inputFile := filepath.Join(path.Dir(filename), "input.txt")
 	lines := utils.ReadLinesFromFile(inputFile, "\n")
 
-	result, err := Part1(lines)
+	result, err := part1(lines)
 	if err != nil {
 		log.Fatalf("Part 1: %s", err)
 	}
 	fmt.Printf("Result from Part 1: %d\n", result)
 
-	result, err = Part2(lines)
+	result, err = part2(lines)
 	if err != nil {
 		log.Fatalf("Part 2: %s", err)
 	}

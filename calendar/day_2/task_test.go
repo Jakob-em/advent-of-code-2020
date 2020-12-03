@@ -15,13 +15,13 @@ const expectedResultPart1 = 2
 const expectedResultPart2 = 1
 
 func TestPart1Example(t *testing.T) {
-	result, err := Part1(testData)
+	result, err := part1(testData)
 
 	validateResult(t, err, result, expectedResultPart1)
 }
 
 func TestPart2Example(t *testing.T) {
-	result, err := Part2(testData)
+	result, err := part2(testData)
 
 	validateResult(t, err, result, expectedResultPart2)
 }

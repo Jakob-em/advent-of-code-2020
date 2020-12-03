@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jakob-em/advent-of-code-2020/utils"
 	"log"
 	"path"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/Jakob-em/advent-of-code-2020/utils"
 )
 
 type lineData struct {
@@ -18,7 +19,7 @@ type lineData struct {
 	max       int
 }
 
-func Part1(lines []string) (int, error) {
+func part1(lines []string) (int, error) {
 	valid := 0
 	for _, line := range lines {
 		lineData := parseLine(line)
@@ -31,7 +32,7 @@ func Part1(lines []string) (int, error) {
 	return valid, nil
 }
 
-func Part2(lines []string) (int, error) {
+func part2(lines []string) (int, error) {
 	valid := 0
 	for _, line := range lines {
 		lineData := parseLine(line)
@@ -66,13 +67,13 @@ func main() {
 	inputFile := filepath.Join(path.Dir(filename), "input.txt")
 	lines := utils.ReadLinesFromFile(inputFile, "\n")
 
-	result, err := Part1(lines)
+	result, err := part1(lines)
 	if err != nil {
 		log.Fatalf("Part 1: %s", err)
 	}
 	fmt.Printf("Result from Part 1: %d\n", result)
 
-	result, err = Part2(lines)
+	result, err = part2(lines)
 	if err != nil {
 		log.Fatalf("Part 2: %s", err)
 	}

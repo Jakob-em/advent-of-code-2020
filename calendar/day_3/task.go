@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/Jakob-em/advent-of-code-2020/utils"
 	"log"
 	"path"
 	"path/filepath"
 	"runtime"
+
+	"github.com/Jakob-em/advent-of-code-2020/utils"
 )
 
 type movement struct {
@@ -14,7 +15,7 @@ type movement struct {
 	y int
 }
 
-func Part1(lines []string) (int, error) {
+func part1(lines []string) (int, error) {
 	encounteredTrees := countEncounteredTrees(lines, movement{
 		x: 3,
 		y: 1,
@@ -48,7 +49,7 @@ var movesToMultiply = []movement{
 	{x: 1, y: 2},
 }
 
-func Part2(lines []string) (int, error) {
+func part2(lines []string) (int, error) {
 	result := 1
 	for _, move := range movesToMultiply {
 		result *= countEncounteredTrees(lines, move)
@@ -61,13 +62,13 @@ func main() {
 	inputFile := filepath.Join(path.Dir(filename), "input.txt")
 	lines := utils.ReadLinesFromFile(inputFile, "\n")
 
-	result, err := Part1(lines)
+	result, err := part1(lines)
 	if err != nil {
 		log.Fatalf("Part 1: %s", err)
 	}
 	fmt.Printf("Result from Part 1: %d\n", result)
 
-	result, err = Part2(lines)
+	result, err = part2(lines)
 	if err != nil {
 		log.Fatalf("Part 2: %s", err)
 	}
