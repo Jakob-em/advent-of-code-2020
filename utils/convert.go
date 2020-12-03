@@ -4,7 +4,7 @@ import (
 	"strconv"
 )
 
-func ConvertSliceToInts(input []string) ([]int, error) {
+func ToIntSlice(input []string) ([]int, error) {
 	ints := make([]int, len(input))
 	for i, s := range input {
 		converted, err := strconv.Atoi(s)

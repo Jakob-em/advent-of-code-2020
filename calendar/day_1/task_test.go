@@ -1,30 +1,30 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
-var testData = []string{
-	"1721",
-	"979",
-	"366",
-	"299",
-	"675",
-	"1456",
-}
+const input = `1721
+979
+366
+299
+675
+1456`
+
+var lines = strings.Split(input, "\n")
 
 const expectedResultPart1 = 514579
-
 const expectedResultPart2 = 241861950
 
 func TestPart1Example(t *testing.T) {
-	result, err := part1(testData)
+	result, err := part1(lines)
 
 	validateResult(t, err, result, expectedResultPart1)
 }
 
 func TestPart2Example(t *testing.T) {
-	result, err := part2(testData)
+	result, err := part2(lines)
 
 	validateResult(t, err, result, expectedResultPart2)
 }

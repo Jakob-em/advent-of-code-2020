@@ -14,7 +14,7 @@ import (
 const SUM = 2020
 
 func part1(lines []string) (int, error) {
-	numbers, err := utils.ConvertSliceToInts(lines)
+	numbers, err := utils.ToIntSlice(lines)
 	if err != nil {
 		return 0, err
 	}
@@ -29,7 +29,7 @@ func part1(lines []string) (int, error) {
 }
 
 func part2(lines []string) (int, error) {
-	numbers, err := utils.ConvertSliceToInts(lines)
+	numbers, err := utils.ToIntSlice(lines)
 	if err != nil {
 		return 0, err
 	}

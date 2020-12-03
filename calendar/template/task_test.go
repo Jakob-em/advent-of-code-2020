@@ -1,25 +1,25 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
-var testData = []string{
-	"line1",
-}
+const input = ``
+
+var lines = strings.Split(input, "\n")
 
 const expectedResultPart1 = 0
-
 const expectedResultPart2 = 0
 
 func TestPart1Example(t *testing.T) {
-	result, err := part1(testData)
+	result, err := part1(lines)
 
 	validateResult(t, err, result, expectedResultPart1)
 }
 
 func TestPart2Example(t *testing.T) {
-	result, err := part2(testData)
+	result, err := part2(lines)
 
 	validateResult(t, err, result, expectedResultPart2)
 }
