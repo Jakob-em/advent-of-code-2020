@@ -28,7 +28,7 @@ func TestPart2Example(t *testing.T) {
 
 func validateResult(t *testing.T, err error, result int, expected int) {
 	if err != nil {
-		t.Fatalf("Unexcpected Error: %s", err)
+		t.Fatalf("Unexpected Error: %s", err)
 	}
 
 	if result != expected {
