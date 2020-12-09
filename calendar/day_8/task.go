@@ -13,11 +13,6 @@ import (
 	"github.com/Jakob-em/advent-of-code-2020/utils"
 )
 
-type Instruction struct {
-	opcode   string
-	operator int
-}
-
 func part1(lines []string) (int, error) {
 	sim, err := simulator.New(lines, nil)
 
