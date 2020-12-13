@@ -44,37 +44,27 @@ type congruence struct {
 func solveSystem(congruences []congruence) int {
 	sum := 0
 	m := 1
-	ch := make(chan int, len(congruences))
 	for _, c := range congruences {
 		m *= c.mod
 	}
 	for _, c := range congruences {
-		go func(c congruence) {
-			M := m / c.mod
-			N := multiplicativeInverse(M, c.mod)
-			ch <- M * N * c.remainder
-		}(c)
-	}
-
-	for range congruences {
-		sum += <-ch
+		M := m / c.mod
+		N := multiplicativeInverse(M, c.mod)
+		sum += M * N * c.remainder
 	}
 
 	return sum % m
 }
 
 func multiplicativeInverse(a int, m int) int {
-	b := m
+	r0, r1 := a, m
 	x0, x1 := 1, 0
-	for b != 0 {
-		newB := a % b
-		newX := x0 - x1*(a/b)
-		x0 = x1
-		x1 = newX
-		a = b
-		b = newB
+	for r1 != 0 {
+		newR := r0 % r1
+		newX := x0 - x1*(r0/r1)
+		x0, x1 = x1, newX
+		r0, r1 = r1, newR
 	}
-
 	return (x0 + m) % m
 }
 
@@ -86,7 +76,7 @@ func part2(lines []string) (int, error) {
 			id, _ := strconv.Atoi(s)
 			congruences = append(congruences, congruence{
 				mod:       id,
-				remainder: ((id * 2) - i) % id,
+				remainder: id - i,
 			})
 		}
 	}
