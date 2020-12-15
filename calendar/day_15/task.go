@@ -22,7 +22,7 @@ func part1(lines []string) (int, error) {
 }
 
 func calcNthNumber(lines []string, n int) int {
-	mem := map[int]NumberStats{}
+	mem := make([]NumberStats, n)
 
 	numbers, _ := utils.ToIntSlice(lines)
 	for i, e := range numbers {
@@ -35,11 +35,11 @@ func calcNthNumber(lines []string, n int) int {
 	spoken := numbers[len(numbers)-1]
 
 	for i := len(numbers) + 1; i <= n; i++ {
-		stats, _ := mem[spoken]
+		stats := mem[spoken]
 
 		spoken = stats.nextNumber
-		stats, exists := mem[spoken]
-		mem[spoken] = updateStats(stats, exists, i)
+		stats = mem[spoken]
+		mem[spoken] = updateStats(stats, stats.lastTimeSpoken != 0, i)
 	}
 
 	return spoken
