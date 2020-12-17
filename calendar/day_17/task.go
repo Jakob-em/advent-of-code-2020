@@ -6,6 +6,7 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"sync"
 
 	"github.com/Jakob-em/advent-of-code-2020/utils"
 )
@@ -17,14 +18,14 @@ type position struct {
 	w int
 }
 
-type Conway struct {
+type conway struct {
 	fourDimensions bool
 	field          map[position]bool
 }
 
 type positionVisitor func(pos position)
 
-func NewConway(lines []string, fourDimensions bool) Conway {
+func newConway(lines []string, fourDimensions bool) conway {
 	field := map[position]bool{}
 	for y, line := range lines {
 		for x, c := range line {
@@ -34,32 +35,50 @@ func NewConway(lines []string, fourDimensions bool) Conway {
 			}] = c == '#'
 		}
 	}
-	return Conway{
+	return conway{
 		fourDimensions: fourDimensions,
 		field:          field,
 	}
 }
 
-func (c *Conway) simulate(turns int) {
+func (c *conway) simulate(turns int) {
 	for i := 0; i < turns; i++ {
-		newField := map[position]bool{}
+		newActiveCells := make(chan position, 1000)
+		var wg sync.WaitGroup
+
 		for p := range c.field {
-			c.processNeighbors(p, true, func(pos position) {
-				state := c.field[pos]
-				activeNeighbors := c.countActiveNeighbors(pos)
-				if state {
-					newField[pos] = activeNeighbors == 3 || activeNeighbors == 2
-				}
-				if !state && activeNeighbors == 3 {
-					newField[pos] = true
-				}
-			})
+			wg.Add(1)
+			go func(p position) {
+				defer wg.Done()
+				c.processNeighbors(p, func(pos position) {
+					state := c.field[pos]
+					activeNeighbors := c.countActiveNeighbors(pos)
+					if state && (activeNeighbors == 3 || activeNeighbors == 2) {
+						newActiveCells <- pos
+					} else if !state && activeNeighbors == 3 {
+						newActiveCells <- pos
+					}
+				})
+			}(p)
 		}
-		c.field = newField
+
+		newFieldChan := make(chan map[position]bool)
+
+		go func() {
+			newField := map[position]bool{}
+			for p := range newActiveCells {
+				newField[p] = true
+			}
+			newFieldChan <- newField
+		}()
+
+		wg.Wait()
+		close(newActiveCells)
+		c.field = <-newFieldChan
 	}
 }
 
-func (c *Conway) countActiveFields() int {
+func (c *conway) countActiveFields() int {
 	count := 0
 	for _, s := range c.field {
 		if s {
@@ -69,27 +88,22 @@ func (c *Conway) countActiveFields() int {
 	return count
 }
 
-func (c *Conway) countActiveNeighbors(pos position) int {
+func (c *conway) countActiveNeighbors(pos position) int {
 	count := 0
-	c.processNeighbors(pos, false, func(pos position) {
-		if c.field[pos] {
+	c.processNeighbors(pos, func(p position) {
+		if pos != p && c.field[p] {
 			count++
 		}
 	})
 	return count
 }
 
-func (c *Conway) processNeighbors(pos position, includeOwn bool, visit positionVisitor) {
+func (c *conway) processNeighbors(pos position, visit positionVisitor) {
 	for x := -1; x <= 1; x++ {
 		for y := -1; y <= 1; y++ {
 			for z := -1; z <= 1; z++ {
-				excluded := x == 0 && y == 0 && z == 0 && !includeOwn
-
 				if c.fourDimensions {
 					for w := -1; w <= 1; w++ {
-						if excluded && w == 0 {
-							continue
-						}
 						visit(position{
 							x: pos.x + x,
 							y: pos.y + y,
@@ -98,9 +112,6 @@ func (c *Conway) processNeighbors(pos position, includeOwn bool, visit positionV
 						})
 					}
 				} else {
-					if excluded {
-						continue
-					}
 					visit(position{
 						x: pos.x + x,
 						y: pos.y + y,
@@ -113,15 +124,15 @@ func (c *Conway) processNeighbors(pos position, includeOwn bool, visit positionV
 }
 
 func part1(lines []string) (int, error) {
-	conway := NewConway(lines, false)
-	conway.simulate(6)
-	return conway.countActiveFields(), nil
+	c := newConway(lines, false)
+	c.simulate(6)
+	return c.countActiveFields(), nil
 }
 
 func part2(lines []string) (int, error) {
-	conway := NewConway(lines, true)
-	conway.simulate(6)
-	return conway.countActiveFields(), nil
+	c := newConway(lines, true)
+	c.simulate(6)
+	return c.countActiveFields(), nil
 }
 
 func main() {
