@@ -84,21 +84,6 @@ func TestPart2Example(t *testing.T) {
 	validateResult(t, err, result, expectedResultPart2)
 }
 
-func TestPart2Small(t *testing.T) {
-	result, err := part2([]string{
-		"0: 4 | 4 0 1",
-		"4: \"a\"",
-		"1: \"b\"",
-		"",
-		"aaabb",
-		"a",
-		"aab",
-		"abb",
-	})
-
-	validateResult(t, err, result, 3)
-}
-
 func validateResult(t *testing.T, err error, result int, expected int) {
 	if err != nil {
 		t.Fatalf("Unexpected Error: %s", err)

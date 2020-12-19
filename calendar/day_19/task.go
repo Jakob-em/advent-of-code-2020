@@ -59,13 +59,7 @@ type result struct {
 	matched   bool
 }
 
-var depth = 0
-
 func (c *ComposedRule) match(value string, rules RuleLookup) []result {
-	depth++
-	if depth > 100 {
-		return []result{}
-	}
 	var allResults []result
 	for _, chainedRule := range c.rules {
 		matchedAll := true
@@ -77,7 +71,11 @@ func (c *ComposedRule) match(value string, rules RuleLookup) []result {
 			var found []result
 			for _, r := range toCheck {
 				matches := (*rules)[ruleId].match(r.remaining, rules)
-				found = append(found, matches...)
+				for _, match := range matches {
+					if match.matched {
+						found = append(found, match)
+					}
+				}
 			}
 
 			if len(found) == 0 {
@@ -133,19 +131,36 @@ func part1(lines []string) (int, error) {
 	count := 0
 	for _, line := range lines[lastRule+2:] {
 		results := rules[0].match(line, &rules)
-		if len(results) > 0 {
+		valid := false
+		for _, r := range results {
+			if r.matched && len(r.remaining) == 0 {
+				valid = true
+				break
+			}
+		}
+		if valid {
 			count++
 		}
 	}
 	return count, nil
 }
 
+const expandLimit = 10
+
 func part2(lines []string) (int, error) {
 	for i, line := range lines {
 		if line == "8: 42" {
-			lines[i] = "8: 42 | 42 8"
+			var matchers []string
+			for i := 1; i < expandLimit; i++ {
+				matchers = append(matchers, strings.Trim(strings.Repeat(" 42", i), " "))
+			}
+			lines[i] = fmt.Sprintf("8: %s", strings.Join(matchers, " | "))
 		} else if line == "11: 42 31" {
-			lines[i] = "11: 42 31 | 42 11 31"
+			var matchers []string
+			for i := 1; i < expandLimit; i++ {
+				matchers = append(matchers, strings.Trim(strings.Repeat(" 42", i)+strings.Repeat(" 31", i), " "))
+			}
+			lines[i] = fmt.Sprintf("11: %s", strings.Join(matchers, " | "))
 		}
 	}
 
